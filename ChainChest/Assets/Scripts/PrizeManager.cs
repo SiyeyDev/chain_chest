@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class PrizeManager : MonoBehaviour
 {
@@ -21,8 +22,13 @@ public class PrizeManager : MonoBehaviour
         }
     }
 
+    private int prize;
+
+    public static event Action<int> OnPrizeUpdated;
+
     void Awake()
     {
+        // Singleton pattern implementation
         if (_instance == null)
         {
             _instance = this;
@@ -34,23 +40,23 @@ public class PrizeManager : MonoBehaviour
         }
     }
 
-    public delegate void PrizeUpdated(int newPrize);
-    public static event PrizeUpdated OnPrizeUpdated;
-
-    private int prize;
-
-    public void AddPrize(int amount)
+    // Add value to the prize and invoke the OnPrizeUpdated event
+    public void AddPrize(int value)
     {
-        prize += amount;
+        prize += value;
+        Debug.Log("Prize added. New prize: " + prize);
         OnPrizeUpdated?.Invoke(prize);
     }
 
+    // Reset the prize to zero and invoke the OnPrizeUpdated event
     public void ResetPrize()
     {
         prize = 0;
+        Debug.Log("Prize reset.");
         OnPrizeUpdated?.Invoke(prize);
     }
 
+    // Get the current prize value
     public int GetPrize()
     {
         return prize;
